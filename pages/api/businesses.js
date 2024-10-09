@@ -23,23 +23,22 @@ export default async function handler(req, res) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log('Token decodificado:', decoded);
 
-        const { id } = req.query; // Obtener el ID del negocio desde la consulta
+        const { id } = req.query;
 
         if (req.method === 'POST') {
-            // Lógica para añadir un negocio
-            const { name, description, location, coordinates, category, openingHours, contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails } = req.body;
+            const { name, description, location, coordinates, category, openingHours, contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails, logo } = req.body;
             const { lat, lng } = coordinates;
 
-            if (!name || !description || !location || !coordinates || !category || !openingHours || !lat || !lng) {
+            if (!name || !description || !location || !coordinates || !category || !openingHours || !lat || !lng || !logo) {
                 return res.status(400).json({ success: false, message: 'Faltan datos del negocio.' });
             }
 
             await pool.query(
-                `INSERT INTO businesses (name, description, location, latitude, longitude, category, opening_hours_open, opening_hours_close, contact_phone, contact_email, whatsapp, franchise, website, franchise_details)
+                `INSERT INTO businesses (name, description, location, latitude, longitude, category, opening_hours_open, opening_hours_close, contact_phone, contact_email, whatsapp, franchise, website, franchise_details, logo)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     name, description, location, lat, lng, category, openingHours.open, openingHours.close,
-                    contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails
+                    contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails, logo
                 ]
             );
 
@@ -56,18 +55,18 @@ export default async function handler(req, res) {
                 return res.status(400).json({ success: false, message: 'Falta el ID del negocio.' });
             }
 
-            const { name, description, location, coordinates, category, openingHours, contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails } = req.body;
+            const { name, description, location, coordinates, category, openingHours, contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails, logo } = req.body;
             const { lat, lng } = coordinates;
 
-            if (!name || !description || !location || !coordinates || !category || !openingHours || !lat || !lng) {
+            if (!name || !description || !location || !coordinates || !category || !openingHours || !lat || !lng || !logo) {
                 return res.status(400).json({ success: false, message: 'Faltan datos del negocio.' });
             }
 
             await pool.query(
-                `UPDATE businesses SET name = ?, description = ?, location = ?, latitude = ?, longitude = ?, category = ?, opening_hours_open = ?, opening_hours_close = ?, contact_phone = ?, contact_email = ?, whatsapp = ?, franchise = ?, website = ?, franchise_details = ? WHERE id = ?`,
+                `UPDATE businesses SET name = ?, description = ?, location = ?, latitude = ?, longitude = ?, category = ?, opening_hours_open = ?, opening_hours_close = ?, contact_phone = ?, contact_email = ?, whatsapp = ?, franchise = ?, website = ?, franchise_details = ?, logo = ? WHERE id = ?`,
                 [
                     name, description, location, lat, lng, category, openingHours.open, openingHours.close,
-                    contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails, id
+                    contactPhone, contactEmail, whatsapp, franchise, website, franchiseDetails, logo, id
                 ]
             );
 
